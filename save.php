@@ -11,15 +11,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	if ($conn){
 		$sql = "USE USER";
 		if (mysqli_query($conn, $sql)) {
-			echo "Database connected successfully";
+			echo "Database connected successfully\n";
 		} else {
 			echo "Error creating database: " . mysqli_error($conn);
 		}
-		$sql = "INSERT INTO username1 (name,password) VALUES('$name','$pssword')";
+		$sql = "INSERT INTO username1 (username,password) VALUES('$name','$pssword')";
 		if (mysqli_query($conn, $sql)) {
-			echo "INSERT successfully";
+			echo "Registered successfully";
 		} else {
-			echo "Error creating data " . mysqli_error($conn);
+			echo "Error creating entry Duplicate Entry found please use a different username " . mysqli_error($conn);
 		}
 
 
