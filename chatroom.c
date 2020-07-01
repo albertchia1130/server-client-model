@@ -4,31 +4,23 @@
 #include <stdlib.h> 
 #include <netinet/in.h> 
 #include <string.h> 
-#include <pthread.h>
+#include "ThreadAPI.c"
+
 #define PORT 8080 
 
-int new_socket;
-pthread_t ptid[10];
-int server_fd,  valread;  
 
-void* func(void* arg) 
-{
-    char buffer[1024] = {0};
-    while(1){
-        valread = read( new_socket , buffer, 1024); 
-        printf("%s\n",buffer ); 
-        bzero (buffer, sizeof(buffer));
-        //send(new_socket , hello , strlen(hello) , 0 ); 
-        //printf("Hello message sent\n");
-    }        
-}
+
+pthread_t ptid[10];
+int server_fd;  
+
+
 int main(int argc, char const *argv[]) 
 { 
     
     struct sockaddr_in address; 
     int opt = 1; 
     int addrlen = sizeof(address); 
-    int i=0;
+    
     //char *hello = "Hello from server"; 
        
     // Creating socket file descriptor 
@@ -66,14 +58,16 @@ int main(int argc, char const *argv[])
     } 
     printf("Accepting a connection from client\n");
     while (1){
-        if ((new_socket = accept(server_fd, (struct sockaddr *)&address,  
+        user_obj* user= malloc(sizeof (user_obj));
+        if ((user->new_socket = accept(server_fd, (struct sockaddr *)&address,  
                        (socklen_t*)&addrlen))<0) 
         { 
             perror("accept"); 
             exit(EXIT_FAILURE); 
         } 
-        printf("Thread id %d is created\n",i); 
-        pthread_create(&ptid[i++], NULL, &func, NULL); 
+        arrayOfUser[numOfUser]=user->new_socket;
+        printf("Thread id %d is created\n",numOfUser); 
+        pthread_create(&ptid[numOfUser++], NULL, &functionForlistening, user); 
     }
     printf("Client received\nClient address is %d\n",address.sin_addr.s_addr);
     while(1);
